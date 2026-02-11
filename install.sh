@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-git clone https://github.com/oogy/dotfiles.git ~ && cd ~/dotfiles && ./setup.sh
+pushd ${HOME}
+git clone https://github.com/oogy/dotfiles.git && pushd dotfiles && ./setup.sh
