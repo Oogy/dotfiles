@@ -181,7 +181,8 @@ install_macOS_daemon() {
 
 # Main installation function for macOS
 install_macOS() {
-    echo "Setting up dotfiles on macOS..."
+    local mode="${1:-full}"
+    echo "Setting up dotfiles on macOS (mode: $mode)..."
 
     if ! check_deps; then
         echo "Please install missing dependencies first"
@@ -190,12 +191,16 @@ install_macOS() {
 
     sync_config
     sync_iterm2_themes
-    install_macOS_packages
-    install_macOS_daemon
 
-    # Check for SSO_PROFILE_NAME in .zshrc
-    if [ -f ~/.zshrc ] && ! grep -q SSO_PROFILE_NAME ~/.zshrc; then
-        echo "WARNING: SSO_PROFILE_NAME not found in ~/.zshrc"
+    # Only install packages and daemon during full setup, not during sync
+    if [ "$mode" = "full" ]; then
+        install_macOS_packages
+        install_macOS_daemon
+
+        # Check for SSO_PROFILE_NAME in .zshrc
+        if [ -f ~/.zshrc ] && ! grep -q SSO_PROFILE_NAME ~/.zshrc; then
+            echo "WARNING: SSO_PROFILE_NAME not found in ~/.zshrc"
+        fi
     fi
 
     echo "macOS setup complete!"
@@ -208,8 +213,9 @@ install_Linux() {
 
 # Main function
 main() {
+    local mode="${1:-full}"
     echo "Dotfiles setup for $OS"
-    install_${OS}
+    install_${OS} "$mode"
 }
 
-main
+main "$@"

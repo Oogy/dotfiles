@@ -62,10 +62,10 @@ log "Pulling changes..."
 if git pull --rebase origin "$CURRENT_BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
     log "Successfully pulled changes"
 
-    # Run setup.sh if it exists and is executable
+    # Run setup.sh in sync mode (skips daemon and package installation)
     if [ -x "$DOTFILES_DIR/setup.sh" ]; then
-        log "Running setup.sh..."
-        "$DOTFILES_DIR/setup.sh" 2>&1 | tee -a "$LOG_FILE"
+        log "Running setup.sh in sync mode..."
+        "$DOTFILES_DIR/setup.sh" sync 2>&1 | tee -a "$LOG_FILE"
     fi
 else
     log "ERROR: Failed to pull changes"
