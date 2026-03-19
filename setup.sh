@@ -98,6 +98,7 @@ install_macOS_packages() {
     echo "Installing packages on macOS..."
 
     local packages=(
+	btop
         wget
         neovim
         git
@@ -198,6 +199,14 @@ install_macOS() {
     # Only install daemon during full setup, not during sync
     if [ "$mode" = "full" ]; then
         install_macOS_daemon
+
+        # Install Oh My Zsh if not present
+        if [ ! -d "$HOME/.oh-my-zsh" ]; then
+            echo "Installing Oh My Zsh..."
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        else
+            echo "Oh My Zsh already installed"
+        fi
 
         # Check for SSO_PROFILE_NAME in .zshrc
         if [ -f ~/.zshrc ] && ! grep -q SSO_PROFILE_NAME ~/.zshrc; then
