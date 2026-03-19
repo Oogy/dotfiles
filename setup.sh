@@ -193,9 +193,10 @@ install_macOS() {
     sync_config
     sync_iterm2_themes
 
-    # Only install packages and daemon during full setup, not during sync
+    install_macOS_packages
+
+    # Only install daemon during full setup, not during sync
     if [ "$mode" = "full" ]; then
-        install_macOS_packages
         install_macOS_daemon
 
         # Check for SSO_PROFILE_NAME in .zshrc
