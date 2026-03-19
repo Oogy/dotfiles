@@ -126,6 +126,7 @@ install_macOS_packages() {
     local casks=(
         font-profont-nerd-font
         claude-code
+	ghostty
     )
 
     for cask in "${casks[@]}"; do
