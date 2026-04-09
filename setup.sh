@@ -98,6 +98,8 @@ install_macOS_packages() {
     echo "Installing packages on macOS..."
 
     local packages=(
+	ollama
+	opencode
 	btop
         wget
         neovim
@@ -112,6 +114,7 @@ install_macOS_packages() {
         tree
         zmap
         telnet
+	lm-studio
     )
 
     for package in "${packages[@]}"; do
