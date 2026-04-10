@@ -98,6 +98,7 @@ install_macOS_packages() {
     echo "Installing packages on macOS..."
 
     local packages=(
+	obsidian
 	ollama
 	opencode
 	btop
