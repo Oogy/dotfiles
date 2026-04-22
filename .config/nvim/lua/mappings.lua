@@ -102,10 +102,9 @@ end, { desc = "insert section header" })
 
 -- Insert a task checkbox, leave cursor in insert mode after it
 map("n", "<leader>it", function()
-  vim.api.nvim_put({"- [ ] "}, "l", true, true)
-  local row = vim.api.nvim_win_get_cursor(0)[1]
-  local col = #("- [ ] ")
-  vim.api.nvim_win_set_cursor(0, {row, col})
+  vim.api.nvim_put({"- [ ] "}, "l", true, false)
+  local row = vim.api.nvim_win_get_cursor(0)[1] + 1
+  vim.api.nvim_win_set_cursor(0, {row, #("- [ ] ")})
   vim.cmd("startinsert")
 end, { desc = "insert task" })
 
