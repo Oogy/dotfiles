@@ -103,8 +103,15 @@ end, { desc = "insert section header" })
 -- Insert a task checkbox, leave cursor in insert mode after it
 map("n", "<leader>it", function()
   local row = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, row, row, false, {"- [ ] "})
-  vim.api.nvim_win_set_cursor(0, {row + 1, #("- [ ]")})
+  local cur_line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+  if cur_line == "" then
+    -- Replace the blank line instead of inserting after it
+    vim.api.nvim_buf_set_lines(0, row - 1, row, false, {"- [ ] "})
+    vim.api.nvim_win_set_cursor(0, {row, #("- [ ] ")})
+  else
+    vim.api.nvim_buf_set_lines(0, row, row, false, {"- [ ] "})
+    vim.api.nvim_win_set_cursor(0, {row + 1, #("- [ ] ")})
+  end
   vim.cmd("startinsert")
 end, { desc = "insert task" })
 
