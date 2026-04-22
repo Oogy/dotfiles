@@ -44,7 +44,7 @@ map("n", "<leader>id", function()
 end, { desc = "insert date" })
 
 -- Insert current time with bounding box
-map("n", "<leader>it", function()
+map("n", "<leader>iT", function()
   local line = with_border(get_time_str())
   vim.api.nvim_put({line, dash_line(#line)}, "l", true, true)
 end, { desc = "insert time (EST)" })
@@ -101,7 +101,7 @@ map("n", "<leader>is", function()
 end, { desc = "insert section header" })
 
 -- Insert a task checkbox, leave cursor in insert mode after it
-map("n", "<leader>iT", function()
+map("n", "<leader>it", function()
   vim.api.nvim_put({"- [ ] "}, "l", true, true)
   local row = vim.api.nvim_win_get_cursor(0)[1]
   local col = #("- [ ] ")
