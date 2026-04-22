@@ -107,12 +107,12 @@ map("n", "<leader>it", function()
   if cur_line == "" then
     -- Replace the blank line instead of inserting after it
     vim.api.nvim_buf_set_lines(0, row - 1, row, false, {"- [ ] "})
-    vim.api.nvim_win_set_cursor(0, {row, #("- [ ] ")})
+    vim.api.nvim_win_set_cursor(0, {row, 0})
   else
     vim.api.nvim_buf_set_lines(0, row, row, false, {"- [ ] "})
-    vim.api.nvim_win_set_cursor(0, {row + 1, #("- [ ] ")})
+    vim.api.nvim_win_set_cursor(0, {row + 1, 0})
   end
-  vim.cmd("startinsert")
+  vim.cmd("startinsert!")
 end, { desc = "insert task" })
 
 -- Toggle task completion on current line
