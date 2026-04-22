@@ -52,16 +52,37 @@ end, { desc = "insert time (EST)" })
 map("n", "<leader>iD", function()
   local date_line = with_border(get_date_str())
   local time_line = with_border(get_time_str())
-  local lines = {
-    dash_line(DAY_SEP_WIDTH),
+  local sep = dash_line(DAY_SEP_WIDTH)
+
+  local cur_row = vim.api.nvim_win_get_cursor(0)[1]
+  local cur_line = vim.api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
+  local on_sep = cur_line == sep
+
+  -- Remove blank line above day separator
+  if on_sep and cur_row >= 2 then
+    local above = vim.api.nvim_buf_get_lines(0, cur_row - 2, cur_row - 1, false)[1]
+    if above == "" then
+      vim.api.nvim_buf_set_lines(0, cur_row - 2, cur_row - 1, false, {})
+      cur_row = cur_row - 1
+      vim.api.nvim_win_set_cursor(0, {cur_row, 0})
+    end
+  end
+
+  -- When on a separator, reuse it as the top boundary; otherwise insert full block
+  local lines = {}
+  if not on_sep then
+    table.insert(lines, sep)
+  end
+  vim.list_extend(lines, {
     date_line,
     dash_line(#date_line),
     time_line,
     dash_line(#time_line),
     "",
-    dash_line(DAY_SEP_WIDTH),
-  }
+    sep,
+  })
   vim.api.nvim_put(lines, "l", true, true)
+
   -- Position cursor on the blank line between content and closing separator
   local row = vim.api.nvim_win_get_cursor(0)[1]
   vim.api.nvim_win_set_cursor(0, {row - 1, 0})
