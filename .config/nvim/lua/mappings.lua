@@ -15,18 +15,67 @@ if wk_ok then
   })
 end
 
--- Insert current date (format: Day-dd-M-YYYY, e.g., Tue-11-2-2026)
-map("n", "<leader>id", function()
+-- Bounding box helpers
+local function dash_line(len)
+  return string.rep("-", len)
+end
+
+local function with_border(text)
+  return text .. " |"
+end
+
+local DAY_SEP_WIDTH = 63
+
+local function get_date_str()
   local date_str = os.date("%a-%d-%m-%Y")
-  -- Remove leading zero from month
   date_str = date_str:gsub("%-0(%d)%-", "-%1-")
-  vim.api.nvim_put({date_str}, "c", true, true)
+  return date_str
+end
+
+local function get_time_str()
+  return os.date("%H:%M:%S") .. " EST"
+end
+
+-- Insert current date with bounding box
+map("n", "<leader>id", function()
+  local line = with_border(get_date_str())
+  vim.api.nvim_put({line, dash_line(#line)}, "l", true, true)
 end, { desc = "insert date" })
 
--- Insert current time in 24H format with EST timezone
+-- Insert current time with bounding box
 map("n", "<leader>it", function()
-  local time_str = os.date("%H:%M:%S") .. " EST"
-  vim.api.nvim_put({time_str}, "c", true, true)
+  local line = with_border(get_time_str())
+  vim.api.nvim_put({line, dash_line(#line)}, "l", true, true)
 end, { desc = "insert time (EST)" })
+
+-- Insert new Day (day separators + date box + time box)
+map("n", "<leader>iD", function()
+  local date_line = with_border(get_date_str())
+  local time_line = with_border(get_time_str())
+  local lines = {
+    dash_line(DAY_SEP_WIDTH),
+    date_line,
+    dash_line(#date_line),
+    time_line,
+    dash_line(#time_line),
+    "",
+    dash_line(DAY_SEP_WIDTH),
+  }
+  vim.api.nvim_put(lines, "l", true, true)
+  -- Position cursor on the blank line between content and closing separator
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_win_set_cursor(0, {row - 1, 0})
+end, { desc = "insert new Day" })
+
+-- Insert section header with bounding box
+map("n", "<leader>is", function()
+  vim.ui.input({ prompt = "Section header: " }, function(input)
+    if input and input ~= "" then
+      local line = with_border(input)
+      local border = dash_line(#line)
+      vim.api.nvim_put({"", border, line, border, ""}, "l", true, true)
+    end
+  end)
+end, { desc = "insert section header" })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
