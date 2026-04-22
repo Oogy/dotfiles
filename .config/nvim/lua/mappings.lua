@@ -12,6 +12,7 @@ local wk_ok, wk = pcall(require, "which-key")
 if wk_ok then
   wk.add({
     { "<leader>i", group = "insert" },
+    { "<leader>t", group = "task" },
   })
 end
 
@@ -98,5 +99,25 @@ map("n", "<leader>is", function()
     end
   end)
 end, { desc = "insert section header" })
+
+-- Insert a task checkbox, leave cursor in insert mode after it
+map("n", "<leader>iT", function()
+  vim.api.nvim_put({"- [ ] "}, "l", true, true)
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  local col = #("- [ ] ")
+  vim.api.nvim_win_set_cursor(0, {row, col})
+  vim.cmd("startinsert")
+end, { desc = "insert task" })
+
+-- Toggle task completion on current line
+map("n", "<leader>tx", function()
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+  local new_line = line:gsub("%- %[ %]", "- [x]")
+  if new_line == line then
+    new_line = line:gsub("%- %[x%]", "- [ ]")
+  end
+  vim.api.nvim_buf_set_lines(0, row - 1, row, false, {new_line})
+end, { desc = "toggle task complete" })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
